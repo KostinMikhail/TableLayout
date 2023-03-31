@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Btn">
+        <item name="android:paddingTop">5dip</item>
+        <item name="paddingStart">4dip</item>
+        <item name="paddingEnd">4dip</item>
+        <item name="android:paddingBottom">1dip</item>
+        <item name="background">@color/black</item>
+    </style>
+
+
+
+
+
+
+
+</resources>

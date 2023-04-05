@@ -24,51 +24,35 @@ class MainActivity : AppCompatActivity() {
             val tblRow = TableRow(this)
             val tv = TextView(this)
             tv.setBackgroundResource(R.drawable.bg)
-            tblRow.addView(tv)
+
             binding.tblLayout?.addView(tblRow)
             if (r >= 2)
-                tv.text = "Участник" + (r - 1)
+                tv.text = "Участник " + (r - 1)
+                tblRow.addView(tv)
 
             for (c in 1..cols) {
                 val tv1 = TextView(this)
+                val et = EditText(this)
+                et.setBackgroundResource(R.drawable.bg)
                 tv1.setBackgroundResource(R.drawable.bg)
-                tblRow.addView(tv1)
-                if (c in 2..rows && r == 1) {
-                    tv1.text = ((c - 1).toString())
-                }
-                if (c in rows..2 && r == 1) {
-                    tv1.text = "222"
-                }
 
-                if (c == 1 && r >= 2) {
-                    tv1.text = ((r - 1).toString())
+
+                if (c in 2 until rows && r == 1) {
+                    tv1.text = ((c - 1).toString())
+                    tblRow.addView(tv1)
                 }
-                tv1.tag = "$c+$r"
+//                if (c == 1 && r >= 2) {
+//                    tv1.text = ((r - 1).toString())
+//                    tblRow.addView(tv1)
+//                }
+                if (c <= cols - 2 && r >= 2) {
+                    tblRow.addView(et)
+                    //тут мы делаем Эдит Вью
+                }
+                //tv1.tag = "$c+$r"
 
             }
         }
-
-
-//        while (i in 1..Rows) {
-//            i++
-//            val tblRow = TableRow(this)
-//            val tv = TextView(this)
-//            tv.setBackgroundResource(R.drawable.bg)
-//            tblRow.addView(tv)
-//            tv.text = "Участник $i"
-//
-//            binding.tblLayout?.addView(tblRow)
-//
-//            for (j in 1..Cols) {
-//                val tv1 = TextView(this)
-//                tv1.setBackgroundResource(R.drawable.bg)
-//                tblRow.addView(tv1)
-//                tv1.text = "$j+$i"
-//                tv1.tag = "$j+$i"
-//
-//            }
-//        }
-
     }
 }
 

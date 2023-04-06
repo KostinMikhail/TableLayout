@@ -41,30 +41,34 @@ class MainActivity : AppCompatActivity() {
                 val et = EditText(this)
                 et.setBackgroundResource(R.drawable.bg)
 
-
-                if (r >= 2 && c < 2) {
+                if (c < 2) {
                     tblRow.addView(tv1)
-                    tv1.text = ((r - 1).toString())
-                    //тут мы создаём цифры в следующем столбце после Участник
-                } else  if (r in 1 until rows) {
+                    if (r > 1) {
+                        tv1.text = ((r - 1).toString())
+//тут мы создаём цифры в следующем столбце после Участник
+                    }
+                }
+                ///here we go again
+                if (r == 1 && c < cols - 2) {
                     tblRow.addView(tv1)
-                    tv1.text = "nothing"
-                }
+                    tv1.text = c.toString()
 
-                if (r == 1) {
-//                    tblRow.addView(tv1)
-//                    tv1.text = c.toString()
-                    //тут мы создаём цифры в первой строке
-                }
-
-
-//                if (c <= cols - 2 && r >= 2) {
-//                    tblRow.addView(et)
-//                    тут мы делаем Эдит Вью
-//                }
             }
 
-
+                ///here we go again
+//                if (c <= cols - 2 && r >= 2) {
+//                    tblRow.addView(et)
+//тут мы делаем Эдит Вью
+//                }
+//                if (r >= 1 && c < cols - 2) {
+//                    tblRow.addView(et)
+//                   tv1.text = c.toString()
+//тут мы создаём цифры в первой строке
+//                }
+//                if (c <= cols - 2 && r >= 2) {
+//                    tblRow.addView(et)
+//тут мы делаем Эдит Вью
+//                }
 //            for (c in 1..cols) {
 //                val tv1 = TextView(this)
 //                val et = EditText(this)
@@ -81,12 +85,12 @@ class MainActivity : AppCompatActivity() {
 //                }
 //                if (c <= cols - 2 && r >= 2) {
 //                    tblRow.addView(et)
-//                    //тут мы делаем Эдит Вью
+//тут мы делаем Эдит Вью
 //                }
-//                //tv1.tag = "$c+$r"
+//tv1.tag = "$c+$r"
 //
 //            }
         }
     }
-}
+}}
 

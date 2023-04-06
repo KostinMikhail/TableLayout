@@ -1,96 +1,108 @@
 package com.kostlin.inspiration
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.*
-import com.kostlin.inspiration.databinding.ActivityMainBinding
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.view.children
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
-    private var rows: Int = 8
-    private var cols: Int = 10
+    private lateinit var tableLayout: TableLayout
+    private var rows: Int = 7 // количество участников
+    private var cols: Int = 6 // количество столбцов (включая столбец с номерами)
 
-
-    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar?.hide()
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        setContentView(R.layout.activity_main)
 
-        for (r in 1..rows) {
-            val tblRow = TableRow(this)
-            val tv = TextView(this)
-            tv.setBackgroundResource(R.drawable.bg)
+        tableLayout = findViewById(R.id.tableLayout)
+        createTable()
+    }
 
-            binding.tblLayout?.addView(tblRow)
+    @SuppressLint("SetTextI18n")
+    private fun createTable() {
+        // Создаем строки и столбцы таблицы
+        for (r in 0..rows) {
+            val tableRow = TableRow(this)
 
-            tblRow.addView(tv)
-            //тут мы создаём первый столбец
-            if (r >= 2) {
-                tv.text = "Участник " + (r - 1)
-            }
+            for (c in 0 until cols) {
+                val textView = TextView(this)
 
-
-            for (c in 1..cols - 2) {
-                val tv1 = TextView(this)
-                tv1.setBackgroundResource(R.drawable.bg)
-                val et = EditText(this)
-                et.setBackgroundResource(R.drawable.bg)
-
-                if (c < 2) {
-                    tblRow.addView(tv1)
-                    if (r > 1) {
-                        tv1.text = ((r - 1).toString())
-//тут мы создаём цифры в следующем столбце после Участник
+                if (r == 0) {
+                    // Заполняем первую строку таблицы номерами
+                    textView.text = if (c == 0) " " else "$c"
+                    textView.setTextColor(ContextCompat.getColor(this, android.R.color.black))
+                } else {
+                    if (c == 0) {
+                        // Заполняем первый столбец таблицы номерами участников
+                        textView.text = "Участник " + r.toString()
+                        textView.setTextColor(ContextCompat.getColor(this, android.R.color.black))
+                    } else {
+                        // Заполняем таблицу EditText для ввода очков
+                        val editText = EditText(this)
+                        editText.hint = "0-5"
+                        editText.inputType = android.text.InputType.TYPE_CLASS_NUMBER
+                        editText.setTextColor(ContextCompat.getColor(this, android.R.color.black))
+                        tableRow.addView(editText)
                     }
                 }
-                ///here we go again
-                if (r == 1 && c < cols - 2) {
-                    tblRow.addView(tv1)
-                    tv1.text = c.toString()
-
+                tableRow.addView(textView)
             }
+            tableLayout.addView(tableRow)
+        }
 
-                ///here we go again
-//                if (c <= cols - 2 && r >= 2) {
-//                    tblRow.addView(et)
-//тут мы делаем Эдит Вью
-//                }
-//                if (r >= 1 && c < cols - 2) {
-//                    tblRow.addView(et)
-//                   tv1.text = c.toString()
-//тут мы создаём цифры в первой строке
-//                }
-//                if (c <= cols - 2 && r >= 2) {
-//                    tblRow.addView(et)
-//тут мы делаем Эдит Вью
-//                }
-//            for (c in 1..cols) {
-//                val tv1 = TextView(this)
-//                val et = EditText(this)
-//                et.setBackgroundResource(R.drawable.bg)
-//                tv1.setBackgroundResource(R.drawable.bg)
-//
-//                if (c in 2 until rows && r == 1) {
-//                    tv1.text = ((c - 1).toString())
-//                    tblRow.addView(tv1)
-//                }
-//                if (c == 1 && r >= 2) {
-//                    tv1.text = ((r - 1).toString())
-//                    tblRow.addView(tv1)
-//                }
-//                if (c <= cols - 2 && r >= 2) {
-//                    tblRow.addView(et)
-//тут мы делаем Эдит Вью
-//                }
-//tv1.tag = "$c+$r"
-//
-//            }
+        // Добавляем слушатель на все EditText в таблице
+        for (tableRow in tableLayout.children) {
+            if (tableRow is TableRow) {
+                for (view in tableRow.children) {
+                    if (view is EditText) {
+                        view.setOnFocusChangeListener { _, hasFocus ->
+                            if (!hasFocus) {
+                                checkEditTextValue(view)
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
-}}
 
+    private fun checkEditTextValue(editText: EditText) {
+        // Проверяем значение в EditText, если значение вне диапазона 0-5, то подсвечиваем красным и выводим Toast
+        val value = editText.text.toString()
+        if (value.isNotEmpty()) {
+            val intValue = value.toInt()
+            if (intValue < 0 || intValue > 5) {
+                editText.setTextColor(ContextCompat.getColor(this, android.R.color.holo_red_dark))
+                Toast.makeText(this, "Допустимые значения от 0 до 5", Toast.LENGTH_SHORT).show()
+            } else {
+                editText.setTextColor(ContextCompat.getColor(this, android.R.color.black))
+                calculateRowScore()
+            }
+        }
+    }
+
+    private fun calculateRowScore() {
+        // Считаем сумму очков в строке
+        for (tableRow in tableLayout.children) {
+            if (tableRow is TableRow && tableRow.childCount > 1) {
+                var sum = 0
+                for (view in tableRow.children) {
+                    if (view is EditText) {
+                        if (view.text.toString().isNotEmpty()) {
+                            sum += view.text.toString().toInt()
+                        }
+                    }
+                }
+
+                // Добавляем TextView для вывода суммы очков в строке
+                val textView = TextView(this)
+                textView.text = sum.toString()
+                textView.setTextColor(ContextCompat.getColor(this, android.R.color.black))
+                tableRow.addView(textView)
+            }
+        }
+    }
+}

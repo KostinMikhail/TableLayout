@@ -10,6 +10,11 @@
         <item>
             <shape
                 android:shape="rectangle"
+                android:insetLeft="1dp"
+                android:insetTop="1dp"
+                android:insetRight="1dp"
+                android:insetBottom="1dp"
+                android:color="@color/black"
                 >
 
                 <solid android:color="@color/white" />
